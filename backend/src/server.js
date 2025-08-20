@@ -5,6 +5,7 @@ import cors from "cors";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import materialRoutes from "./routes/materialRoutes.js";
+import quizRoutes from "./routes/quizRoutes.js";
 const app = express();
 app.use(
   cors({
@@ -19,3 +20,4 @@ app.listen(process.env.PORT, () => {
 });
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", materialRoutes);
+app.use("/api/dashboard/quiz", quizRoutes);
