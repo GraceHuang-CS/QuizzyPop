@@ -2,7 +2,10 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import FormInput from "../../components/FormInput";
 import { registerUser, googleSignUp } from "../../api/auth";
-
+import NavBar from "../../components/NavBar";
+import SignUpPageSticker from "../../assets/SignUpPageSticker.png";
+import logo from "../../assets/logo.png";
+import "../../styles/pgs/RegisterPage.css";
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -14,7 +17,6 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Google Sign-Up handler
   const handleGoogleSignUp = useCallback(
     async (response) => {
       setLoading(true);
@@ -23,17 +25,41 @@ const RegisterPage = () => {
       try {
         // Send the credential token to your backend
         const data = await googleSignUp({ credential: response.credential });
+
+        // Display the message from backend
         setMessage(data.message);
 
-        if (data.message.toLowerCase().includes("success")) {
-          // Store auth token if provided
-          if (data.token) {
-            localStorage.setItem("authToken", data.token);
+        // Store auth token if provided
+        if (data.token) {
+          localStorage.setItem("authToken", data.token);
+
+          // Check if it's a new registration or existing user login
+          if (data.message === "Account created successfully") {
+            // New user - show success message briefly then redirect to dashboard/home
+            setTimeout(() => {
+              navigate("/dashboard", { replace: true }); // or wherever you want new users to go
+            }, 2000);
+          } else if (data.message === "Login successful") {
+            // Existing user - show message that they're already registered
+            setMessage("You're already registered. Redirecting to log in...");
+            setTimeout(() => {
+              navigate("/login", { replace: true }); // or wherever logged in users should go
+            }, 5000);
           }
-          navigate("/dashboard", { replace: true });
         }
       } catch (error) {
-        setMessage(error.message || "Google sign-up failed");
+        // Handle different error scenarios
+        if (
+          error.message.includes("already registered") ||
+          error.message.includes("already exists")
+        ) {
+          setMessage("You're already registered. Redirecting to log in...");
+          setTimeout(() => {
+            navigate("/login", { replace: true });
+          }, 5000);
+        } else {
+          setMessage(error.message || "Google sign-up failed");
+        }
       } finally {
         setLoading(false);
       }
@@ -44,6 +70,7 @@ const RegisterPage = () => {
   // Initialize Google Sign-In
   useEffect(() => {
     const initializeGoogleSignIn = () => {
+      console.log(import.meta.env.VITE_GOOGLE_CLIENT_ID);
       if (window.google) {
         window.google.accounts.id.initialize({
           client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID, // Add this to your .env file
@@ -56,7 +83,7 @@ const RegisterPage = () => {
             theme: "outline",
             size: "large",
             text: "signup_with",
-            width: "100%",
+            width: 300,
           }
         );
       }
@@ -97,10 +124,13 @@ const RegisterPage = () => {
     try {
       const data = await registerUser({ name, email, password });
       setMessage(data.message);
-      setFormData({ name: "", email: "", password: "", confirmPassword: "" });
 
       if (data.message.toLowerCase().includes("success")) {
-        navigate("/login", { replace: true });
+        setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+        // Show success message for a moment before redirecting
+        setTimeout(() => {
+          navigate("/login", { replace: true });
+        }, 2000);
       }
     } catch (error) {
       setMessage(error.message || "Registration failed");
@@ -109,112 +139,120 @@ const RegisterPage = () => {
     }
   };
 
+  const getMessageColor = (message) => {
+    if (
+      message.toLowerCase().includes("success") ||
+      message.toLowerCase().includes("created") ||
+      message.toLowerCase().includes("logging you in")
+    ) {
+      return "green";
+    }
+    return "red";
+  };
+
   return (
-    <div style={{ maxWidth: "400px", margin: "2rem auto" }}>
-      <h2>Register</h2>
+    <div className="content">
+      <NavBar />
 
-      {/* Google Sign-Up Button */}
-      <div style={{ marginBottom: "1.5rem" }}>
-        <div id="google-signup-button"></div>
+      <div className="big-container">
+        <div className="left-section">
+          <div className="logo">
+            <div className="img-container">
+              <img className="logo" src={logo} alt="Logo" />
+            </div>
+            <p>QuizzyPop</p>
+          </div>
+          <div className="illustration">
+            <div className="img-container2">
+              <img src={SignUpPageSticker} alt="Illustration" />
+            </div>
+          </div>
+        </div>
+        <div className="form-box">
+          <h2>Create an account</h2>
+
+          {/* Google Sign-Up Button */}
+          <div className="google">
+            <div id="google-signup-button"></div>
+          </div>
+
+          {/* Regular Form */}
+          <form onSubmit={handleSubmit}>
+            <FormInput
+              label="Name"
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Your full name"
+            />
+            <FormInput
+              label="Email"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Your email"
+            />
+            <FormInput
+              label="Password"
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+            />
+            <FormInput
+              label="Confirm Password"
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Confirm password"
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                padding: "0.5rem 1rem",
+                width: "100%",
+                marginTop: "1rem",
+              }}
+            >
+              {loading ? "Registering..." : "Register with Email"}
+            </button>
+          </form>
+
+          {message && (
+            <p
+              style={{
+                marginTop: "1rem",
+                color: getMessageColor(message),
+                textAlign: "center",
+                fontWeight: "500",
+              }}
+            >
+              {message}
+            </p>
+          )}
+
+          <p style={{ textAlign: "center", marginTop: "1rem" }}>
+            Already have an account?{" "}
+            <button
+              onClick={() => navigate("/login")}
+              style={{
+                background: "none",
+                border: "none",
+                color: "#007bff",
+                cursor: "pointer",
+                textDecoration: "underline",
+              }}
+            >
+              Login here
+            </button>
+          </p>
+        </div>
       </div>
-
-      {/* Divider */}
-      <div
-        style={{
-          textAlign: "center",
-          margin: "1rem 0",
-          position: "relative",
-          borderTop: "1px solid #ddd",
-        }}
-      >
-        <span
-          style={{
-            background: "white",
-            padding: "0 1rem",
-            color: "#666",
-            position: "absolute",
-            top: "-10px",
-            left: "50%",
-            transform: "translateX(-50%)",
-          }}
-        >
-          OR
-        </span>
-      </div>
-
-      {/* Regular Form */}
-      <form onSubmit={handleSubmit}>
-        <FormInput
-          label="Name"
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Your full name"
-        />
-        <FormInput
-          label="Email"
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Your email"
-        />
-        <FormInput
-          label="Password"
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Password"
-        />
-        <FormInput
-          label="Confirm Password"
-          type="password"
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          placeholder="Confirm password"
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            padding: "0.5rem 1rem",
-            width: "100%",
-            marginTop: "1rem",
-          }}
-        >
-          {loading ? "Registering..." : "Register with Email"}
-        </button>
-      </form>
-
-      {message && (
-        <p
-          style={{
-            marginTop: "1rem",
-            color: message.includes("successfully") ? "green" : "red",
-          }}
-        >
-          {message}
-        </p>
-      )}
-
-      <p style={{ textAlign: "center", marginTop: "1rem" }}>
-        Already have an account?{" "}
-        <button
-          onClick={() => navigate("/login")}
-          style={{
-            background: "none",
-            border: "none",
-            color: "#007bff",
-            cursor: "pointer",
-            textDecoration: "underline",
-          }}
-        >
-          Login here
-        </button>
-      </p>
     </div>
   );
 };
