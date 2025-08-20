@@ -1,6 +1,7 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:5001";
+axios.defaults.baseURL =
+  import.meta.env.VITE_API_URL || "http://localhost:5001";
 
 export const registerUser = async ({ name, email, password }) => {
   try {
@@ -69,21 +70,27 @@ export const resetPasswordUser = async (token, password, confirmPassword) => {
     };
   }
 };
-
 export async function googleSignUp(googleData) {
   try {
-    const response = await axios.post("`/auth/google-signup`", googleData, {
+    const response = await axios.post("/api/auth/google-signup", googleData, {
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    return response.data;
-  } catch (error) {
-    // Axios error handling
-    if (error.response && error.response.data) {
-      throw new Error(error.response.data.message || "Google sign-up failed");
+    const { token, user, message } = response.data;
+
+    // Store token like your other functions do
+    if (token) {
+      localStorage.setItem("token", token);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     }
-    throw new Error(error.message || "Google sign-up failed");
+
+    return { success: true, message, user, token };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Google sign-up failed",
+    };
   }
 }
