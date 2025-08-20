@@ -4,6 +4,9 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import transporter from "../config/email.js";
 import crypto from "crypto";
+import { OAuth2Client } from "google-auth-library";
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export async function register(req, res) {
   try {
@@ -46,6 +49,92 @@ export async function register(req, res) {
   }
 }
 
+export async function googleSignUp(req, res) {
+  try {
+    const { credential } = req.body;
+
+    // Verify the Google token
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { email, name, picture, email_verified } = payload;
+
+    if (!email_verified) {
+      return res.status(400).json({
+        message: "Email not verified by Google",
+      });
+    }
+
+    // Check if user already exists
+    let user = await User.findOne({ email });
+
+    if (user) {
+      // User exists, check auth provider
+      if (user.authProvider !== "google") {
+        return res.status(400).json({
+          message:
+            "Account exists with different sign-up method. Please use email/password login.",
+        });
+      }
+
+      // Generate JWT token for existing user
+      const token = jwt.sign(
+        { userId: user._id, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: "24h" }
+      );
+
+      return res.json({
+        message: "Login successful",
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          picture: user.picture,
+        },
+      });
+    }
+
+    // Create new user
+    user = new User({
+      name,
+      email,
+      picture,
+      authProvider: "google",
+      googleId: payload.sub,
+      emailVerified: true, // Google emails are already verified
+    });
+
+    await user.save();
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
+
+    res.status(201).json({
+      message: "Account created successfully",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        picture: user.picture,
+      },
+    });
+  } catch (error) {
+    console.error("Google sign-up error:", error);
+    res.status(500).json({
+      message: "Server error during Google sign-up",
+    });
+  }
+}
 export async function login(req, res) {
   try {
     const { email, password } = req.body;
