@@ -1,0 +1,378 @@
+/* frontend/src/components/styles/Quiz.css */
+.quiz-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Quiz Header */
+.quiz-header {
+  margin-bottom: 2rem;
+}
+
+.quiz-header h3 {
+  font-size: 1.5rem;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4299e1, #3182ce);
+  transition: width 0.3s ease;
+}
+
+/* Question */
+.quiz-question {
+  margin-bottom: 2rem;
+}
+
+.question-source {
+  display: inline-block;
+  background: #edf2f7;
+  color: #4a5568;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.question-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+/* Options */
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.quiz-option {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.quiz-option:hover {
+  border-color: #cbd5e0;
+  background: #f7fafc;
+}
+
+.quiz-option.selected {
+  border-color: #4299e1;
+  background: #ebf8ff;
+}
+
+.option-letter {
+  font-weight: bold;
+  color: #4a5568;
+  margin-right: 0.75rem;
+  min-width: 20px;
+}
+
+.option-text {
+  flex: 1;
+  color: #2d3748;
+}
+
+/* Navigation */
+.quiz-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.nav-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-button.primary {
+  background: #4299e1;
+  color: white;
+}
+
+.nav-button.primary:hover:not(:disabled) {
+  background: #3182ce;
+}
+
+.nav-button.secondary {
+  background: #edf2f7;
+  color: #4a5568;
+}
+
+.nav-button.secondary:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+.nav-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.question-indicator {
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+.answered {
+  color: #38a169;
+}
+
+.unanswered {
+  color: #a0aec0;
+}
+
+/* Question Overview */
+.quiz-overview {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.overview-title {
+  font-size: 0.875rem;
+  color: #4a5568;
+  margin-bottom: 0.75rem;
+}
+
+.overview-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.overview-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #e2e8f0;
+  background: white;
+  color: #4a5568;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overview-dot:hover {
+  border-color: #cbd5e0;
+}
+
+.overview-dot.current {
+  border-color: #4299e1;
+  background: #4299e1;
+  color: white;
+}
+
+.overview-dot.answered {
+  border-color: #38a169;
+  background: #38a169;
+  color: white;
+}
+
+/* Review Mode */
+.quiz-container.review-mode {
+  max-width: 1000px;
+}
+
+.score-summary {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.score-circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.score-circle.large {
+  width: 150px;
+  height: 150px;
+}
+
+.score-number {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.score-total {
+  font-size: 1.25rem;
+  opacity: 0.9;
+}
+
+.score-percentage {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #2d3748;
+}
+
+.quiz-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.retake-button {
+  padding: 0.75rem 1.5rem;
+  background: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.retake-button:hover {
+  background: #3182ce;
+}
+
+/* Review Questions */
+.quiz-questions.review .quiz-question {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  background: white;
+}
+
+.question-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.question-result {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.question-result.correct {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.question-result.incorrect {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+/* Answer Options in Review */
+.quiz-option.correct-answer {
+  border-color: #38a169;
+  background: #f0fff4;
+}
+
+.quiz-option.wrong-answer {
+  border-color: #e53e3e;
+  background: #fff5f5;
+}
+
+.quiz-option.correct-selected {
+  border-color: #38a169;
+  background: #c6f6d5;
+}
+
+.answer-indicator {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+.answer-indicator.correct {
+  color: #38a169;
+}
+
+.answer-indicator.wrong {
+  color: #e53e3e;
+}
+
+/* Spinner */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e2e8f0;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.spinner.small {
+  width: 16px;
+  height: 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .quiz-container {
+    padding: 1rem;
+    margin: 1rem;
+  }
+
+  .quiz-navigation {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .score-summary {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .overview-dots {
+    justify-content: center;
+  }
+}
