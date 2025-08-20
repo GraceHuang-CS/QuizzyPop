@@ -11,7 +11,7 @@ import auth from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 router.post("/register", register);
-router.post("google-signup", googleSignUp);
+router.post("/google-signup", googleSignUp);
 router.post("/login", login);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
