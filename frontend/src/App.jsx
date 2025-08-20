@@ -7,6 +7,7 @@ import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage.jsx";
 import Dashboard from "./pages/dashboard/Dashboard.jsx";
 import Study from "./pages/dashboard/Study.jsx";
+import MaterialView from "./pages/dashboard/MaterialView.jsx";
 function App() {
   return (
     <>
@@ -18,6 +19,7 @@ function App() {
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/study" element={<Study />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/material/:materialId" element={<MaterialView />} />
       </Routes>
     </>
   );
