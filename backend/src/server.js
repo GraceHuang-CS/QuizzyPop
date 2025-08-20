@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import materialRoutes from "./routes/materialRoutes.js";
 const app = express();
 app.use(
   cors({
@@ -17,3 +18,4 @@ app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}!✅`);
 });
 app.use("/api/auth", authRoutes);
+app.use("/api/dashboard", materialRoutes);
