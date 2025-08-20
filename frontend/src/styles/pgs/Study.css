@@ -1,0 +1,403 @@
+/* StudyMaterialGenerator.css */
+
+.study-material-generator {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  color: white;
+  margin-bottom: 40px;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+}
+
+.header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.generator-form {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 30px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.form-hint {
+  display: block;
+  margin-top: 8px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.form-hint a {
+  color: #667eea;
+  text-decoration: none;
+}
+
+.form-hint a:hover {
+  text-decoration: underline;
+}
+
+/* File Upload Area */
+.file-upload-area {
+  border: 3px dashed #d1d5db;
+  border-radius: 15px;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #fafbff;
+  position: relative;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-upload-area:hover {
+  border-color: #667eea;
+  background: #f0f4ff;
+}
+
+.file-upload-area.drag-active {
+  border-color: #667eea;
+  background: #e0e7ff;
+  transform: scale(1.02);
+}
+
+.file-upload-area.has-file {
+  border-color: #10b981;
+  background: #ecfdf5;
+}
+
+.upload-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.upload-icon {
+  font-size: 3rem;
+  opacity: 0.6;
+}
+
+.upload-prompt p {
+  font-size: 1.1rem;
+  color: #374151;
+  margin: 0;
+  font-weight: 500;
+}
+
+.upload-prompt small {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.file-icon {
+  font-size: 2rem;
+}
+
+.file-details {
+  text-align: left;
+}
+
+.file-name {
+  font-weight: 600;
+  color: #065f46;
+  font-size: 1.1rem;
+}
+
+.file-size {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+/* Material Type Options */
+.material-type-options {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+}
+
+.radio-option {
+  display: block;
+  cursor: pointer;
+}
+
+.radio-option input[type="radio"] {
+  display: none;
+}
+
+.radio-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  background: #fafbff;
+}
+
+.radio-option input[type="radio"]:checked + .radio-content {
+  border-color: #667eea;
+  background: #e0e7ff;
+}
+
+.radio-icon {
+  font-size: 1.5rem;
+}
+
+.radio-title {
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.radio-description {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+/* Page Range */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.checkbox-label input[type="checkbox"] {
+  transform: scale(1.2);
+}
+
+.page-range-inputs {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.page-range-inputs input {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid #e0e7ff;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.page-range-inputs span {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Generate Button */
+.generate-button {
+  width: 100%;
+  padding: 18px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.generate-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.generate-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error Message */
+.error-message {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.error-icon {
+  font-size: 1.2rem;
+}
+
+/* Results Section */
+.results {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.results h3 {
+  color: #111827;
+  font-size: 1.5rem;
+  margin: 0 0 25px 0;
+  font-weight: 700;
+}
+
+.correct-indicator {
+  margin-left: auto;
+  font-weight: bold;
+}
+
+.wrong-indicator {
+  margin-left: auto;
+  font-weight: bold;
+}
+
+.option-letter {
+  font-weight: 600;
+  color: #667eea;
+  min-width: 20px;
+}
+
+.option-text {
+  flex: 1;
+  color: #374151;
+}
+
+.correct-indicator {
+  color: #059669;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .study-material-generator {
+    padding: 15px;
+  }
+
+  .generator-form {
+    padding: 25px;
+    border-radius: 15px;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .material-type-options {
+    grid-template-columns: 1fr;
+  }
+
+  .flashcards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-range-inputs {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .page-range-inputs span {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .file-upload-area {
+    padding: 30px 15px;
+  }
+
+  .upload-icon {
+    font-size: 2rem;
+  }
+
+  .radio-content {
+    padding: 15px;
+  }
+}
+
+.remove-file-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  line-height: 20px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.remove-file-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
