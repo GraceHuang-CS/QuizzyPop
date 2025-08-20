@@ -36,12 +36,12 @@ const Flashcards = ({ cards }) => {
         {flippedCards[currentCardIndex] ? (
           <div className="flashcard-back">
             <div className="flashcard-label">Back</div>
-            <div className="flashcard-content">{card.back}</div>
+            <div className="flashcard-content">{card.answer}</div>
           </div>
         ) : (
           <div className="flashcard-front">
             <div className="flashcard-label">Front</div>
-            <div className="flashcard-content">{card.front}</div>
+            <div className="flashcard-content">{card.question}</div>
           </div>
         )}
       </div>
