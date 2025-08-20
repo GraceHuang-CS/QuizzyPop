@@ -7,7 +7,7 @@ const NavBar = () => {
     <>
       <nav className="navbar">
         <div className="left-side">
-          <div className="logo">
+          <div className="nav-logo">
             <span className="star">⭐</span> QuizzyPop
           </div>
         </div>
