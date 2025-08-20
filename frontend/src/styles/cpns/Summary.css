@@ -1,0 +1,14 @@
+/* Summary */
+.summary-content {
+  line-height: 1.8;
+  color: #374151;
+  font-size: 1rem;
+}
+
+.summary-content p {
+  margin: 0 0 15px 0;
+}
+
+.summary-content p:last-child {
+  margin-bottom: 0;
+}
