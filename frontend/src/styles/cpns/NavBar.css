@@ -1,0 +1,278 @@
+/* NavBar.css - Fixed Version */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #cfe8ff;
+  padding: 15px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  height: 60px;
+  box-sizing: border-box;
+}
+
+.left-side {
+  flex: 1;
+}
+
+.logo {
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #2c3e50;
+  font-size: 1.2rem;
+  padding-left: 10px;
+}
+
+.star {
+  color: #ffd700;
+  font-size: 24px;
+  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.3));
+}
+
+.right-side {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-right: 10px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #2c3e50;
+  font-weight: 500;
+  padding: 8px 15px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.nav-links a:hover {
+  background: rgba(90, 156, 255, 0.1);
+  color: #5a9cff;
+  transform: translateY(-1px);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5a9cff, #4285f4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(90, 156, 255, 0.3);
+}
+
+.avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(90, 156, 255, 0.4);
+}
+
+.avatar.big {
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+}
+
+.hamburger {
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+  display: none;
+  color: #2c3e50;
+  padding: 5px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -350px;
+  width: 320px;
+  height: auto;
+  background: #f8f9fa;
+  box-shadow: -3px 0 15px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  transition: right 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  z-index: 2000;
+  overflow-y: auto;
+  border-radius: 1.3rem;
+}
+
+.sidebar.open {
+  right: 0;
+}
+
+.side-header {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background: #e8f1ff;
+  border-bottom: 2px solid #8b5cf6;
+  position: relative;
+  gap: 12px;
+}
+
+.username {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 1.1rem;
+  flex: 1;
+}
+
+.close-btn {
+  font-size: 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #6b7280;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #374151;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+}
+
+.sidebar li {
+  padding: 16px 20px;
+  cursor: pointer;
+  color: #1f2937;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar li:hover {
+  background: #f3f4f6;
+}
+
+.sidebar hr {
+  margin: 8px 20px;
+  border: none;
+  border-top: 1px solid #e5e7eb;
+}
+
+.logout {
+  color: #ef4444 !important;
+  margin-top: auto;
+}
+
+.logout:hover {
+  background: #fef2f2 !important;
+}
+
+/* Overlay for sidebar */
+.sidebar.open::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .right-side {
+    gap: 15px;
+  }
+
+  .sidebar {
+    width: 280px;
+    right: -330px;
+  }
+}
+
+@media (min-width: 769px) {
+  .nav-links {
+    display: flex;
+  }
+
+  .hamburger {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 10px 15px;
+  }
+
+  .logo {
+    font-size: 1.1rem;
+  }
+
+  .star {
+    font-size: 20px;
+  }
+
+  .avatar {
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
+  }
+
+  .sidebar {
+    width: 100%;
+    right: -100%;
+  }
+
+  .sidebar.open {
+    right: 0;
+  }
+}
