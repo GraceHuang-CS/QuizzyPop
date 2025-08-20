@@ -40,16 +40,17 @@ export async function register(req, res) {
 export async function googleSignUp(req, res) {
   try {
     const { credential } = req.body;
-
+    console.log("credential", credential);
     // Verify the Google token
     const ticket = await client.verifyIdToken({
       idToken: credential,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
 
+    console.log("ticket", ticket);
     const payload = ticket.getPayload();
+    console.log("payload", payload);
     const { email, name, picture, email_verified } = payload;
-
     if (!email_verified) {
       return res.status(400).json({
         message: "Email not verified by Google",
