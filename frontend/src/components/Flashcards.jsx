@@ -33,11 +33,11 @@ const Flashcards = ({ cards }) => {
         <div className="flashcard-single" onClick={handleFlip}>
           {flippedCards[currentCardIndex] ? (
             <div className="flashcard-back">
-              <div className="flashcard-content">{card.answer}</div>
+              <div className="flashcard-content">{card.back}</div>
             </div>
           ) : (
             <div className="flashcard-front">
-              <div className="flashcard-content">{card.question}</div>
+              <div className="flashcard-content">{card.front}</div>
               <div className="flashcard-label">
                 Click the card to see the answer.
               </div>
