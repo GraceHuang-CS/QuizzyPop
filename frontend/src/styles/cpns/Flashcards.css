@@ -19,6 +19,9 @@
   opacity: 0.3;
 }
 
+.flashcard-front {
+  color: black;
+}
 .flashcard-content {
   font-size: 1rem;
   font-weight: 500;
