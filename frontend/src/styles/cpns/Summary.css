@@ -1,7 +1,10 @@
 /* Summary */
 .summary-content {
+  padding: 20px;
+  border-radius: 20px;
+  background-color: white;
   line-height: 1.8;
-  color: #374151;
+  color: black;
   font-size: 1rem;
 }
 

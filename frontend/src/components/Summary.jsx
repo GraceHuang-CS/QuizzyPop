@@ -3,7 +3,7 @@ import "../styles/cpns/Summary.css";
 const Summary = ({ summary }) => {
   return (
     <div className="summary-container">
-      <h3>Generated Summary</h3>
+      <h3>Summary</h3>
       <div className="summary-content">
         {summary
           .split("\n")
