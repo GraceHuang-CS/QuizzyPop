@@ -168,118 +168,121 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="dashboard-page">
+    <>
       <NavBar />
-
-      <div className="dashboard-container">
-        <div className="dashboard-header">
-          <h1>Welcome back, {user?.name || user?.email || "Student"}!</h1>
-          <div className="stats-overview">
-            <div className="stat-card">
-              <span className="stat-number">{materialStats.total}</span>
-              <span className="stat-label">Total Materials</span>
-            </div>
-            <div className="stat-card">
-              <span className="stat-number">{materialStats.flashcards}</span>
-              <span className="stat-label">Flashcards</span>
-            </div>
-            <div className="stat-card">
-              <span className="stat-number">{materialStats.quizzes}</span>
-              <span className="stat-label">Quizzes</span>
-            </div>
-            <div className="stat-card">
-              <span className="stat-number">{materialStats.summaries}</span>
-              <span className="stat-label">Summaries</span>
+      <div className="dashboard-page">
+        <div className="dashboard-container">
+          <div className="dashboard-header">
+            <h1>Welcome back, {user?.name || user?.email || "Student"}!</h1>
+            <div className="stats-overview">
+              <div className="stat-card">
+                <span className="stat-number">{materialStats.total}</span>
+                <span className="stat-label">Total Materials</span>
+              </div>
+              <div className="stat-card">
+                <span className="stat-number">{materialStats.flashcards}</span>
+                <span className="stat-label">Flashcards</span>
+              </div>
+              <div className="stat-card">
+                <span className="stat-number">{materialStats.quizzes}</span>
+                <span className="stat-label">Quizzes</span>
+              </div>
+              <div className="stat-card">
+                <span className="stat-number">{materialStats.summaries}</span>
+                <span className="stat-label">Summaries</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        {error && (
-          <div className="error-message">
-            <div className="error-icon">⚠️</div>
-            <div>{error}</div>
-            <button onClick={() => setError(null)} className="dismiss-error">
-              ×
+          {error && (
+            <div className="error-message">
+              <div className="error-icon">⚠️</div>
+              <div>{error}</div>
+              <button onClick={() => setError(null)} className="dismiss-error">
+                ×
+              </button>
+            </div>
+          )}
+
+          {/* Tabs */}
+          <div className="dashboard-tabs">
+            <button
+              className={`tab-button ${
+                activeTab === "materials" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("materials")}
+            >
+              My Materials
+            </button>
+            <button
+              className={`tab-button ${
+                activeTab === "mocktest" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("mocktest")}
+            >
+              Mock Test
             </button>
           </div>
-        )}
 
-        {/* Tabs */}
-        <div className="dashboard-tabs">
-          <button
-            className={`tab-button ${
-              activeTab === "materials" ? "active" : ""
-            }`}
-            onClick={() => setActiveTab("materials")}
-          >
-            My Materials
-          </button>
-          <button
-            className={`tab-button ${activeTab === "mocktest" ? "active" : ""}`}
-            onClick={() => setActiveTab("mocktest")}
-          >
-            Mock Test
-          </button>
-        </div>
-
-        {/* Materials tab */}
-        {activeTab === "materials" && (
-          <div className="materials-section">
-            <div className="materials-controls">
-              <div className="search-bar">
-                <input
-                  type="text"
-                  placeholder="Search materials..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              <div className="filter-dropdown">
-                <select
-                  value={filterType}
-                  onChange={(e) => setFilterType(e.target.value)}
-                >
-                  <option value="all">All Types</option>
-                  <option value="flashcard">Flashcards</option>
-                  <option value="quiz">Quizzes</option>
-                  <option value="summary">Summaries</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="materials-grid">
-              {filteredMaterials.length === 0 ? (
-                <div className="empty-state">
-                  <div className="empty-icon">📚</div>
-                  <h3>No materials found</h3>
-                  <p>
-                    {searchTerm || filterType !== "all"
-                      ? "Try adjusting your search or filter criteria."
-                      : "Create your first study material to get started!"}
-                  </p>
-                </div>
-              ) : (
-                filteredMaterials.map((material) => (
-                  <MaterialCard
-                    key={material._id}
-                    material={material}
-                    onDelete={() => handleDeleteMaterial(material._id)}
+          {/* Materials tab */}
+          {activeTab === "materials" && (
+            <div className="materials-section">
+              <div className="materials-controls">
+                <div className="search-bar">
+                  <input
+                    type="text"
+                    placeholder="Search materials..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                   />
-                ))
-              )}
-            </div>
-          </div>
-        )}
+                </div>
+                <div className="filter-dropdown">
+                  <select
+                    value={filterType}
+                    onChange={(e) => setFilterType(e.target.value)}
+                  >
+                    <option value="all">All Types</option>
+                    <option value="flashcard">Flashcards</option>
+                    <option value="quiz">Quizzes</option>
+                    <option value="summary">Summaries</option>
+                  </select>
+                </div>
+              </div>
 
-        {/* Mock test tab */}
-        {activeTab === "mocktest" && (
-          <div className="mock-test-section">
-            <p>Mock Test functionality - Coming soon!</p>
-            {/* Replace with your MockTestSelector component */}
-          </div>
-        )}
+              <div className="materials-grid">
+                {filteredMaterials.length === 0 ? (
+                  <div className="empty-state">
+                    <div className="empty-icon">📚</div>
+                    <h3>No materials found</h3>
+                    <p>
+                      {searchTerm || filterType !== "all"
+                        ? "Try adjusting your search or filter criteria."
+                        : "Create your first study material to get started!"}
+                    </p>
+                  </div>
+                ) : (
+                  filteredMaterials.map((material) => (
+                    <MaterialCard
+                      key={material._id}
+                      material={material}
+                      onDelete={() => handleDeleteMaterial(material._id)}
+                    />
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Mock test tab */}
+          {activeTab === "mocktest" && (
+            <div className="mock-test-section">
+              <p>Mock Test functionality - Coming soon!</p>
+              {/* Replace with your MockTestSelector component */}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
