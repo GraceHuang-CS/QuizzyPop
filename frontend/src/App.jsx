@@ -8,6 +8,8 @@ import ResetPasswordPage from "./pages/auth/ResetPasswordPage.jsx";
 import Dashboard from "./pages/dashboard/Dashboard.jsx";
 import Study from "./pages/dashboard/Study.jsx";
 import MaterialView from "./pages/dashboard/MaterialView.jsx";
+import Profile from "./pages/auth/Profile.jsx";
+
 function App() {
   return (
     <>
@@ -17,6 +19,7 @@ function App() {
         <Route path="/login" element={<LogInPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+        <Route path="/get-profile" element={<Profile />} />
         <Route path="/study" element={<Study />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/material/:materialId" element={<MaterialView />} />
