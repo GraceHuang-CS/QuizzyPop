@@ -1,4 +1,3 @@
-// src/api/geminiService.js
 // class GeminiService {
 //   constructor(apiKey) {
 //     this.apiKey = apiKey;
@@ -124,17 +123,20 @@
 
 // Each question should have 4 options with only one correct answer.
 
+// IMPORTANT: The "answer" field must contain the EXACT text of the correct option, not an index number.
+
 // Return ONLY a valid JSON object with this exact structure:
 // {
 //   "questions": [
 //     {
-//       "question": "Question text",
-//       "options": ["Option A", "Option B", "Option C", "Option D"],
-//       "correctAnswer": 0
+//       "question": "What is the capital of France?",
+//       "options": ["London", "Berlin", "Paris", "Madrid"],
+//       "answer": "Paris"
 //     }
 //   ]
 // }
 
+// Make sure the "answer" field contains the exact same text as one of the options, with identical capitalization and spacing.
 // Create at least 8-12 questions if the content allows, covering different aspects of the material.`;
 
 //       case "summary":
@@ -247,6 +249,27 @@
 
 //       const parsedContent = JSON.parse(jsonMatch[0]);
 
+//       // Convert correctAnswer index to actual text if needed (for backward compatibility)
+//       if (materialType === "quiz" && parsedContent.questions) {
+//         parsedContent.questions = parsedContent.questions.map((question) => {
+//           // If correctAnswer is a number, convert it to the actual text
+//           if (typeof question.correctAnswer === "number") {
+//             return {
+//               ...question,
+//               answer: question.options[question.correctAnswer],
+//             };
+//           }
+//           // If it's already text, keep it as is but make sure it's in 'answer' field
+//           if (question.correctAnswer && !question.answer) {
+//             return {
+//               ...question,
+//               answer: question.correctAnswer,
+//             };
+//           }
+//           return question;
+//         });
+//       }
+
 //       this.validateResponse(parsedContent, materialType);
 
 //       return parsedContent;
@@ -288,7 +311,7 @@
 //             !question.question ||
 //             !question.options ||
 //             !Array.isArray(question.options) ||
-//             question.correctAnswer === undefined
+//             !question.answer
 //           ) {
 //             throw new Error(`Invalid question at index ${index}`);
 //           }
@@ -297,9 +320,12 @@
 //               `Question at index ${index} must have exactly 4 options`
 //             );
 //           }
-//           if (question.correctAnswer < 0 || question.correctAnswer >= 4) {
-//             throw new Error(
-//               `Invalid correct answer index at question ${index}`
+//           // Check if the answer exists in the options
+//           if (!question.options.includes(question.answer)) {
+//             console.warn(
+//               `Warning: Answer "${
+//                 question.answer
+//               }" not found in options for question ${index + 1}`
 //             );
 //           }
 //         });
@@ -340,7 +366,7 @@
 //                 "Contact support if the issue persists",
 //                 "All of the above",
 //               ],
-//               correctAnswer: 3,
+//               answer: "All of the above",
 //             },
 //           ],
 //         };
@@ -359,13 +385,101 @@
 class GeminiService {
   constructor(apiKey) {
     this.apiKey = apiKey;
-    // Use the standard model endpoint - Gemini 2.0 Flash handles multimodal content
-    this.baseURL =
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent";
+
+    // Model configuration with fallbacks
+    this.models = [
+      "gemini-2.0-flash-exp", // Primary model
+      "gemini-1.5-flash", // First fallback
+      "gemini-1.5-pro", // Second fallback
+      "gemini-1.0-pro-vision", // Third fallback (for images)
+    ];
+
+    this.currentModelIndex = 0;
+    this.baseURL = "https://generativelanguage.googleapis.com/v1beta/models";
+
+    // Rate limiting configuration
+    this.rateLimit = {
+      maxRequests: 15, // Max requests per time window
+      timeWindow: 60000, // 1 minute in milliseconds
+      requests: [], // Array to track request timestamps
+      retryAfter: 5000, // Wait 5 seconds before retry
+    };
   }
 
-  async processFile(file, materialType, pageRange = null) {
+  // Rate limiting check
+  async checkRateLimit() {
+    const now = Date.now();
+
+    // Remove requests older than the time window
+    this.rateLimit.requests = this.rateLimit.requests.filter(
+      (timestamp) => now - timestamp < this.rateLimit.timeWindow
+    );
+
+    // Check if we're at the rate limit
+    if (this.rateLimit.requests.length >= this.rateLimit.maxRequests) {
+      const oldestRequest = Math.min(...this.rateLimit.requests);
+      const waitTime = this.rateLimit.timeWindow - (now - oldestRequest);
+
+      throw new Error(
+        `Rate limit exceeded. Please wait ${Math.ceil(
+          waitTime / 1000
+        )} seconds before trying again.`
+      );
+    }
+
+    // Add current request timestamp
+    this.rateLimit.requests.push(now);
+  }
+
+  // Get current model URL
+  getCurrentModelURL() {
+    const currentModel = this.models[this.currentModelIndex];
+    return `${this.baseURL}/${currentModel}:generateContent`;
+  }
+
+  // Switch to next available model
+  switchToNextModel() {
+    if (this.currentModelIndex < this.models.length - 1) {
+      this.currentModelIndex++;
+      console.log(
+        `Switching to fallback model: ${this.models[this.currentModelIndex]}`
+      );
+      return true;
+    }
+    return false;
+  }
+
+  // Reset to primary model
+  resetToPrimaryModel() {
+    this.currentModelIndex = 0;
+  }
+
+  // Check if error indicates model unavailability
+  isModelUnavailableError(errorMessage) {
+    const unavailabilityKeywords = [
+      "model not found",
+      "model unavailable",
+      "model not available",
+      "service unavailable",
+      "temporarily unavailable",
+      "model is overloaded",
+      "quota exceeded",
+      "503",
+      "502",
+      "429",
+    ];
+
+    const lowerErrorMessage = errorMessage.toLowerCase();
+    return unavailabilityKeywords.some((keyword) =>
+      lowerErrorMessage.includes(keyword.toLowerCase())
+    );
+  }
+
+  async processFile(file, materialType, pageRange = null, retryCount = 0) {
     try {
+      // Check rate limit before making request
+      await this.checkRateLimit();
+
       // Validate file type first
       if (!this.isSupportedFileType(file.type)) {
         throw new Error(`Unsupported file type: ${file.type}`);
@@ -380,26 +494,106 @@ class GeminiService {
 
       const requestBody = this.buildRequestBody(prompt, fileContent, fileType);
 
-      const response = await fetch(`${this.baseURL}?key=${this.apiKey}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
+      const response = await fetch(
+        `${this.getCurrentModelURL()}?key=${this.apiKey}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Gemini API error response:", errorText);
+
+        // Check for unsupported format errors and provide custom message
+        if (this.isUnsupportedFormatError(errorText)) {
+          throw new Error("This format is not supported by our system.");
+        }
+
+        // Check if model is unavailable and try fallback
+        if (this.isModelUnavailableError(errorText) && retryCount < 3) {
+          if (this.switchToNextModel()) {
+            console.log(
+              `Retrying with fallback model (attempt ${retryCount + 1})`
+            );
+            // Wait a bit before retrying
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            return this.processFile(
+              file,
+              materialType,
+              pageRange,
+              retryCount + 1
+            );
+          }
+        }
+
         throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
-      return this.parseResponse(data, materialType);
+      const result = this.parseResponse(data, materialType);
+
+      // Reset to primary model on successful request
+      this.resetToPrimaryModel();
+
+      return result;
     } catch (error) {
       console.error("Error processing file with Gemini:", error);
+
+      // Check if it's an unsupported format error and provide custom message
+      if (this.isUnsupportedFormatError(error.message)) {
+        throw new Error("This format is not supported by our system.");
+      }
+
+      // Check if it's a rate limit error
+      if (error.message.includes("Rate limit exceeded")) {
+        throw error; // Re-throw rate limit errors as-is
+      }
+
+      // Check if model is unavailable and try fallback
+      if (this.isModelUnavailableError(error.message) && retryCount < 3) {
+        if (this.switchToNextModel()) {
+          console.log(
+            `Retrying with fallback model due to error (attempt ${
+              retryCount + 1
+            })`
+          );
+          // Wait a bit before retrying
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          return this.processFile(
+            file,
+            materialType,
+            pageRange,
+            retryCount + 1
+          );
+        }
+      }
+
       throw new Error(`Failed to process file: ${error.message}`);
     }
+  }
+
+  // Helper method to detect unsupported format errors
+  isUnsupportedFormatError(errorMessage) {
+    const unsupportedFormatKeywords = [
+      "mime type",
+      "not supported",
+      "unsupported format",
+      "invalid file type",
+      "unsupported file type",
+      "format not supported",
+      "mime_type",
+      "MIME type",
+    ];
+
+    const lowerErrorMessage = errorMessage.toLowerCase();
+    return unsupportedFormatKeywords.some((keyword) =>
+      lowerErrorMessage.includes(keyword.toLowerCase())
+    );
   }
 
   async fileToBase64(file) {
@@ -530,7 +724,21 @@ Return ONLY a valid JSON object with this exact structure:
   }
 
   buildRequestBody(prompt, fileContent, fileType) {
-    // Gemini 2.0 Flash handles all file types in the same way
+    // Adjust configuration based on current model
+    const currentModel = this.models[this.currentModelIndex];
+
+    let generationConfig = {
+      temperature: 0.7,
+      topK: 40,
+      topP: 0.95,
+      maxOutputTokens: 8192,
+    };
+
+    // Adjust parameters for older models if needed
+    if (currentModel.includes("1.0")) {
+      generationConfig.maxOutputTokens = 4096; // Older models have lower limits
+    }
+
     return {
       contents: [
         {
@@ -545,12 +753,7 @@ Return ONLY a valid JSON object with this exact structure:
           ],
         },
       ],
-      generationConfig: {
-        temperature: 0.7,
-        topK: 40,
-        topP: 0.95,
-        maxOutputTokens: 8192,
-      },
+      generationConfig,
       safetySettings: [
         {
           category: "HARM_CATEGORY_HARASSMENT",
@@ -736,6 +939,26 @@ Return ONLY a valid JSON object with this exact structure:
       default:
         return null;
     }
+  }
+
+  // Utility method to get current rate limit status
+  getRateLimitStatus() {
+    const now = Date.now();
+    this.rateLimit.requests = this.rateLimit.requests.filter(
+      (timestamp) => now - timestamp < this.rateLimit.timeWindow
+    );
+
+    return {
+      remainingRequests:
+        this.rateLimit.maxRequests - this.rateLimit.requests.length,
+      resetTime:
+        this.rateLimit.requests.length > 0
+          ? new Date(
+              Math.min(...this.rateLimit.requests) + this.rateLimit.timeWindow
+            )
+          : null,
+      currentModel: this.models[this.currentModelIndex],
+    };
   }
 }
 
