@@ -94,3 +94,97 @@ export async function googleSignUp(googleData) {
     };
   }
 }
+
+export const getProfile = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return { success: false, message: "Not logged in" };
+    }
+
+    // Token should already be in axios.defaults, but just in case:
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+    const response = await axios.get("/api/auth/getProfile");
+
+    return {
+      success: true,
+      user: response.data.user,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Failed to fetch profile",
+    };
+  }
+};
+
+export const updateProfile = async (name) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return { success: false, message: "Not logged in" };
+    }
+
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+    const response = await axios.put("/api/auth/getProfile", { name });
+
+    return {
+      success: true,
+      message: response.data.message,
+      user: response.data.user,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Failed to update profile",
+    };
+  }
+};
+
+export const logoutUser = () => {
+  // Remove JWT token from localStorage
+  localStorage.removeItem("token");
+
+  // Remove default Authorization header in Axios
+  delete axios.defaults.headers.common["Authorization"];
+
+  // Optionally, you can return a success message
+  return { success: true, message: "Logged out successfully" };
+};
+
+export const deleteAccount = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return { success: false, message: "Not logged in" };
+    }
+
+    const response = await axios.delete(
+      "http://localhost:5001/api/auth/delete",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    // Clear token after deletion
+    localStorage.removeItem("token");
+    delete axios.defaults.headers.common["Authorization"];
+
+    return {
+      success: true,
+      message: response.data.message,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Failed to delete account",
+    };
+  }
+};
