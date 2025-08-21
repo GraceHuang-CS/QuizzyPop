@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import QuizzyPop from "./QuizzyPop";
 import HelpCenter from "./HelpCenter";
 import PrivacyPolicy from "./PrivacyPolicy";
+import logo from "../assets/logo.png";
 const NavBar = ({ onOpenOverlay }) => {
   const [isOpen, setIsOpen] = useState(false);
   const Navigate = useNavigate();
@@ -22,7 +23,8 @@ const NavBar = ({ onOpenOverlay }) => {
       <nav className="navbar">
         <div className="left-side">
           <div className="nav-logo">
-            <span className="star">⭐</span> QuizzyPop
+            <img src={logo} alt="logo" style={{ width: "40px" }} />
+            QuizzyPop
           </div>
         </div>
 
