@@ -6,13 +6,13 @@ import NavBar from "../../components/NavBar";
 import SignUpPageSticker from "../../assets/SignUpPageSticker.png"; // Same illustration
 import logo from "../../assets/logo.png";
 import "../../styles/pgs/LoginPage.css";
-
+import Overlay from "../../components/MessageOverlay";
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [overlayContent, setOverlayContent] = useState(null);
   const handleGoogleSignIn = useCallback(
     async (response) => {
       setLoading(true);
@@ -117,7 +117,12 @@ const Login = () => {
 
   return (
     <div className="content">
-      <NavBar />
+      <NavBar onOpenOverlay={setOverlayContent} />
+      {overlayContent && (
+        <Overlay onClose={() => setOverlayContent(null)}>
+          {overlayContent}
+        </Overlay>
+      )}
 
       <div className="big-container">
         <div className="left-section">

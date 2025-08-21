@@ -8,6 +8,8 @@ import Quiz from "../../components/Quiz";
 import Summary from "../../components/Summary";
 import "../../styles/pgs/MaterialView.css";
 import NavBar from "../../components/NavBar";
+import Overlay from "../../components/MessageOverlay";
+
 const MaterialView = () => {
   const { materialId } = useParams();
   const [material, setMaterial] = useState(null);
@@ -15,7 +17,7 @@ const MaterialView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAttemptHistory, setShowAttemptHistory] = useState(false);
-
+  const [overlayContent, setOverlayContent] = useState(null);
   useEffect(() => {
     const loadMaterial = async () => {
       try {
@@ -96,7 +98,12 @@ const MaterialView = () => {
   if (loading) {
     return (
       <div className="material-view-page">
-        <NavBar />
+        <NavBar onOpenOverlay={setOverlayContent} />
+        {overlayContent && (
+          <Overlay onClose={() => setOverlayContent(null)}>
+            {overlayContent}
+          </Overlay>
+        )}
         <div className="container">
           <div className="loading-state">
             <div className="spinner"></div>
@@ -110,7 +117,12 @@ const MaterialView = () => {
   if (error) {
     return (
       <div className="material-view-page">
-        <NavBar />
+        <NavBar onOpenOverlay={setOverlayContent} />
+        {overlayContent && (
+          <Overlay onClose={() => setOverlayContent(null)}>
+            {overlayContent}
+          </Overlay>
+        )}
         <div className="container">
           <div className="error-state">
             <div className="error-icon">⚠️</div>
@@ -128,7 +140,12 @@ const MaterialView = () => {
   if (!material) {
     return (
       <div className="material-view-page">
-        <NavBar />
+        <NavBar onOpenOverlay={setOverlayContent} />
+        {overlayContent && (
+          <Overlay onClose={() => setOverlayContent(null)}>
+            {overlayContent}
+          </Overlay>
+        )}
         <div className="container">
           <div className="error-state">
             <div className="error-icon">📄</div>
@@ -147,7 +164,12 @@ const MaterialView = () => {
 
   return (
     <div className="material-view-page">
-      <NavBar />
+      <NavBar onOpenOverlay={setOverlayContent} />
+      {overlayContent && (
+        <Overlay onClose={() => setOverlayContent(null)}>
+          {overlayContent}
+        </Overlay>
+      )}
 
       <div className="container">
         <div className="material-header">

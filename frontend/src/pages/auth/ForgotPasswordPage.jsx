@@ -5,13 +5,13 @@ import { forgotPasswordUser } from "../../api/auth";
 import ForgotPasswordPageSticker from "../../assets/ForgotPasswordPageSticker.png";
 import logo from "../../assets/logo.png";
 import "../../styles/pgs/RegisterPage.css";
-
+import Overlay from "../../components/MessageOverlay";
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const [overlayContent, setOverlayContent] = useState(null);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -34,7 +34,12 @@ const ForgotPasswordPage = () => {
 
   return (
     <div className="content">
-      <NavBar />
+      <NavBar onOpenOverlay={setOverlayContent} />
+      {overlayContent && (
+        <Overlay onClose={() => setOverlayContent(null)}>
+          {overlayContent}
+        </Overlay>
+      )}
       <div className="big-container">
         <div className="left-section">
           <div className="logo">

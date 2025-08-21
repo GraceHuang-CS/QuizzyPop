@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import NavBar from "../../components/NavBar";
 import { useNavigate } from "react-router-dom";
 import "../../styles/pgs/HomePage.css";
 import student from "../../assets/student.png";
+import Overlay from "../../components/MessageOverlay";
 const HomePage = () => {
+  const [overlayContent, setOverlayContent] = useState(null);
   const Navigate = useNavigate();
   const handleOnClick = () => {
     Navigate("/register");
@@ -11,7 +13,12 @@ const HomePage = () => {
 
   return (
     <div>
-      <NavBar />
+      <NavBar onOpenOverlay={setOverlayContent} />
+      {overlayContent && (
+        <Overlay onClose={() => setOverlayContent(null)}>
+          {overlayContent}
+        </Overlay>
+      )}
       <div className="content">
         <div className="vertical">
           <div className="container">

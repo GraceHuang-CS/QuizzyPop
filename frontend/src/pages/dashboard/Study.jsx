@@ -6,6 +6,7 @@ import Quiz from "../../components/Quiz.jsx";
 import Summary from "../../components/Summary.jsx";
 import { saveMaterialToDashboard } from "../../api/studyService";
 import NavBar from "../../components/NavBar.jsx";
+import Overlay from "../../components/MessageOverlay.jsx";
 const Study = () => {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   const [file, setFile] = useState(null);
@@ -20,6 +21,7 @@ const Study = () => {
   const [error, setError] = useState(null);
   const [dragActive, setDragActive] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);
+  const [overlayContent, setOverlayContent] = useState(null);
   useEffect(() => {
     // whenever materialType changes, reset previous result & save status
     setResult(null);
@@ -69,54 +71,54 @@ const Study = () => {
     setSaveStatus(null);
 
     try {
-      // const geminiService = new GeminiService(apiKey.trim());
+      const geminiService = new GeminiService(apiKey.trim());
 
-      // const range =
-      //   pageRange.enabled && pageRange.from && pageRange.to
-      //     ? { from: parseInt(pageRange.from), to: parseInt(pageRange.to) }
-      //     : null;
+      const range =
+        pageRange.enabled && pageRange.from && pageRange.to
+          ? { from: parseInt(pageRange.from), to: parseInt(pageRange.to) }
+          : null;
 
-      // const response = await geminiService.processFile(
-      //   file,
-      //   materialType,
-      //   range
-      // );
-      // setResult(response);
-      // console.log("Generated result:", response);
+      const response = await geminiService.processFile(
+        file,
+        materialType,
+        range
+      );
+      setResult(response);
+      console.log("Generated result:", response);
 
-      // // Auto-save to dashboard if user is logged in
-      // await autoSaveToDashboard(response);
-      const mockGeneratedResult = (() => {
-        switch (materialType) {
-          case "flashcard":
-            return {
-              cards: [
-                { question: "What is the capital of France?", answer: "Paris" },
-                { question: "What is 2 + 2?", answer: "4" },
-              ],
-            };
-          case "quiz":
-            return {
-              questions: [
-                {
-                  question: "What is the largest planet?",
-                  options: ["Earth", "Mars", "Jupiter", "Venus"],
-                  answer: "Jupiter",
-                },
-              ],
-            };
-          case "summary":
-            return {
-              summary: "This is a mock summary of the uploaded file.",
-            };
-          default:
-            return {};
-        }
-      })();
+      // Auto-save to dashboard if user is logged in
+      await autoSaveToDashboard(response);
+      // const mockGeneratedResult = (() => {
+      //   switch (materialType) {
+      //     case "flashcard":
+      //       return {
+      //         cards: [
+      //           { question: "What is the capital of France?", answer: "Paris" },
+      //           { question: "What is 2 + 2?", answer: "4" },
+      //         ],
+      //       };
+      //     case "quiz":
+      //       return {
+      //         questions: [
+      //           {
+      //             question: "What is the largest planet?",
+      //             options: ["Earth", "Mars", "Jupiter", "Venus"],
+      //             answer: "Jupiter",
+      //           },
+      //         ],
+      //       };
+      //     case "summary":
+      //       return {
+      //         summary: "This is a mock summary of the uploaded file.",
+      //       };
+      //     default:
+      //       return {};
+      //   }
+      // })();
 
-      setResult(mockGeneratedResult); // Update UI
-      // ✅ Only auto-save **after generating**
-      await autoSaveToDashboard(mockGeneratedResult);
+      // setResult(mockGeneratedResult); // Update UI
+      // // ✅ Only auto-save **after generating**
+      // await autoSaveToDashboard(mockGeneratedResult);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -192,7 +194,12 @@ const Study = () => {
 
   return (
     <>
-      <NavBar />
+      <NavBar onOpenOverlay={setOverlayContent} />
+      {overlayContent && (
+        <Overlay onClose={() => setOverlayContent(null)}>
+          {overlayContent}
+        </Overlay>
+      )}
       <div className="study-material-generator">
         <div className="container">
           <header className="header">

@@ -6,6 +6,7 @@ import NavBar from "../../components/NavBar";
 import SignUpPageSticker from "../../assets/SignUpPageSticker.png";
 import logo from "../../assets/logo.png";
 import "../../styles/pgs/RegisterPage.css";
+import Overlay from "../../components/MessageOverlay";
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -16,7 +17,7 @@ const RegisterPage = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const [overlayContent, setOverlayContent] = useState(null);
   const handleGoogleSignUp = useCallback(
     async (response) => {
       setLoading(true);
@@ -152,8 +153,12 @@ const RegisterPage = () => {
 
   return (
     <div className="content">
-      <NavBar />
-
+      <NavBar onOpenOverlay={setOverlayContent} />
+      {overlayContent && (
+        <Overlay onClose={() => setOverlayContent(null)}>
+          {overlayContent}
+        </Overlay>
+      )}
       <div className="big-container">
         <div className="left-section">
           <div className="logo">

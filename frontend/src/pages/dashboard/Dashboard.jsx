@@ -4,7 +4,7 @@ import MaterialCard from "../../components/MaterialCard";
 import { fetchMaterials } from "../../api/studyService";
 import { deleteMaterial } from "../../api/studyService";
 import "../../styles/pgs/Dashboard.css";
-
+import Overlay from "../../components/MessageOverlay";
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [materials, setMaterials] = useState([]);
@@ -13,7 +13,7 @@ const Dashboard = () => {
   const [filterType, setFilterType] = useState("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [overlayContent, setOverlayContent] = useState(null);
   // Load user and materials on component mount
   useEffect(() => {
     const loadDashboard = async () => {
@@ -153,7 +153,12 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="dashboard-page">
-        <NavBar />
+        <NavBar onOpenOverlay={setOverlayContent} />
+        {overlayContent && (
+          <Overlay onClose={() => setOverlayContent(null)}>
+            {overlayContent}
+          </Overlay>
+        )}
         <div className="dashboard-container">
           <div className="loading-state">
             <div className="spinner"></div>
@@ -169,7 +174,12 @@ const Dashboard = () => {
 
   return (
     <>
-      <NavBar />
+      <NavBar onOpenOverlay={setOverlayContent} />
+      {overlayContent && (
+        <Overlay onClose={() => setOverlayContent(null)}>
+          {overlayContent}
+        </Overlay>
+      )}
       <div className="dashboard-page">
         <div className="dashboard-container">
           <div className="dashboard-header">
