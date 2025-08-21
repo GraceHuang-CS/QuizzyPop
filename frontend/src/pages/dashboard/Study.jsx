@@ -252,10 +252,7 @@ const Study = () => {
                   <div className="upload-prompt">
                     <div className="upload-icon">📁</div>
                     <p>Drop your file here or click to browse</p>
-                    <small>
-                      Supported formats: PDF, PPT, PPTX, DOC, DOCX, RTF, TXT,
-                      and All Images (JPG, PNG, GIF, WebP, BMP, TIFF)
-                    </small>
+                    <small>Supported formats: PDF, PNG, JPG</small>
                   </div>
                 )}
               </div>
