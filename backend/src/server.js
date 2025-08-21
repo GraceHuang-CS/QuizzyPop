@@ -21,3 +21,7 @@ app.listen(process.env.PORT, () => {
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", materialRoutes);
 app.use("/api/dashboard/quiz", quizRoutes);
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Something broke!" });
+});
