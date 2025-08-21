@@ -46,7 +46,6 @@ const ForgotPasswordPage = () => {
             <div className="img-container">
               <img className="logo" src={logo} alt="Logo" />
             </div>
-            <p>QuizzyPop</p>
           </div>
           <div className="illustration">
             <div className="img-container2">
@@ -72,12 +71,12 @@ const ForgotPasswordPage = () => {
           >
             {loading ? "Sending..." : "Send Reset Link"}
           </button>
+          {message && (
+            <p style={{ marginTop: "1rem", color: success ? "green" : "red" }}>
+              {message}
+            </p>
+          )}
         </form>
-        {message && (
-          <p style={{ marginTop: "1rem", color: success ? "green" : "red" }}>
-            {message}
-          </p>
-        )}
       </div>
     </div>
   );

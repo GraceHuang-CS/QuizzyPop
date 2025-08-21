@@ -21,7 +21,7 @@
   align-items: center;
   justify-content: center;
   min-height: calc(100vh - 80px); /* Adjust based on NavBar height */
-  padding: 20px;
+  /* padding: 20px; */
   background: white;
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
@@ -186,8 +186,7 @@
   font-weight: 500;
 }
 
-/* Add some spacing after Google button */
-.google + form::before {
+/* .google + form::before {
   content: "";
   display: block;
   height: 1px;
@@ -200,9 +199,9 @@
   );
   margin: 20px 0;
   position: relative;
-}
+}  */
 
-.google + form::after {
+/* .google + form::after {
   content: "OR";
   position: absolute;
   background: white;
@@ -211,12 +210,12 @@
   padding: 0 15px;
   transform: translateX(-50%) translateY(-30px);
   left: 50%;
-}
+} */
 
-.google + form {
+/* .google + form {
   position: relative;
   margin-top: 25px;
-}
+} */
 
 /* Responsive Design */
 @media (max-width: 768px) {

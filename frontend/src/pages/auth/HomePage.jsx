@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import NavBar from "../../components/NavBar";
 import { useNavigate } from "react-router-dom";
 import "../../styles/pgs/HomePage.css";
-import student from "../../assets/student.png";
+import HomePageSticker from "../../assets/HomePageSticker.png";
 import Overlay from "../../components/MessageOverlay";
 const HomePage = () => {
   const [overlayContent, setOverlayContent] = useState(null);
@@ -33,7 +33,7 @@ const HomePage = () => {
         <div className="image-container">
           <img
             className="image"
-            src={student}
+            src={HomePageSticker}
             alt="Logo"
             width="50"
             height="50"

@@ -38,14 +38,14 @@ const RegisterPage = () => {
           if (data.message === "Account created successfully") {
             // New user - show success message briefly then redirect to dashboard/home
             setTimeout(() => {
-              navigate("/dashboard", { replace: true }); // or wherever you want new users to go
+              navigate("/login", { replace: true }); // or wherever you want new users to go
             }, 2000);
           } else if (data.message === "Login successful") {
             // Existing user - show message that they're already registered
             setMessage("You're already registered. Redirecting to log in...");
             setTimeout(() => {
               navigate("/login", { replace: true }); // or wherever logged in users should go
-            }, 5000);
+            }, 2000);
           }
         }
       } catch (error) {
@@ -57,7 +57,7 @@ const RegisterPage = () => {
           setMessage("You're already registered. Redirecting to log in...");
           setTimeout(() => {
             navigate("/login", { replace: true });
-          }, 5000);
+          }, 2000);
         } else {
           setMessage(error.message || "Google sign-up failed");
         }
@@ -165,7 +165,6 @@ const RegisterPage = () => {
             <div className="img-container">
               <img className="logo" src={logo} alt="Logo" />
             </div>
-            <p>QuizzyPop</p>
           </div>
           <div className="illustration">
             <div className="img-container2">

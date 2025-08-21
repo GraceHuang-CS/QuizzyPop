@@ -7,6 +7,7 @@ import ForgotPasswordPageSticker from "../../assets/ForgotPasswordPageSticker.pn
 import logo from "../../assets/logo.png";
 import "../../styles/pgs/RegisterPage.css";
 import Overlay from "../../components/MessageOverlay";
+import NavBar from "../../components/NavBar";
 const ResetPasswordPage = () => {
   const { token } = useParams();
   const navigate = useNavigate();
@@ -39,7 +40,9 @@ const ResetPasswordPage = () => {
     setSuccess(result.success);
 
     if (result.success) {
-      navigate("/login");
+      setTimeout(() => {
+        navigate("/login", { replace: true }); // or wherever you want new users to go
+      }, 2000);
     }
 
     setLoading(false);
@@ -93,12 +96,14 @@ const ResetPasswordPage = () => {
             >
               {loading ? "Resetting..." : "Reset Password"}
             </button>
+            {message && (
+              <p
+                style={{ marginTop: "1rem", color: success ? "green" : "red" }}
+              >
+                {message}
+              </p>
+            )}
           </form>
-          {message && (
-            <p style={{ marginTop: "1rem", color: success ? "green" : "red" }}>
-              {message}
-            </p>
-          )}
         </div>
       </div>
     </>

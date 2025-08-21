@@ -32,7 +32,7 @@ const Login = () => {
           if (data.message.toLowerCase().includes("success")) {
             setTimeout(() => {
               navigate("/study", { replace: true });
-            }, 1000);
+            }, 2000);
           }
         }
       } catch (error) {
@@ -130,7 +130,6 @@ const Login = () => {
             <div className="img-container">
               <img className="logo" src={logo} alt="Logo" />
             </div>
-            <p>QuizzyPop</p>
           </div>
           <div className="illustration">
             <div className="img-container2">
