@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 import transporter from "../config/email.js";
 import crypto from "crypto";
 import { OAuth2Client } from "google-auth-library";
-
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export async function register(req, res) {
@@ -240,10 +239,122 @@ export async function resetPassword(req, res) {
 
 export async function getProfile(req, res) {
   try {
-    const user = await User.findById(req.user.userId).select(-password);
-    res.json(user);
+    const user = await User.findById(req.user._id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Return response in the format expected by frontend
+    res.json({
+      success: true,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        picture: user.picture,
+        emailVerified: user.emailVerified,
+        authProvider: user.authProvider,
+        googleId: user.googleId,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 }
+
+export async function updateProfile(req, res) {
+  try {
+    const { name } = req.body;
+
+    // Validation
+    if (!name || typeof name !== "string" || name.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Name is required and must be a non-empty string",
+      });
+    }
+
+    if (name.trim().length > 100) {
+      return res.status(400).json({
+        success: false,
+        message: "Name must be less than 100 characters",
+      });
+    }
+
+    // Update user
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        name: name.trim(),
+        updatedAt: new Date(),
+      },
+      { new: true }
+    ).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Profile updated successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        picture: user.picture,
+        emailVerified: user.emailVerified,
+        authProvider: user.authProvider,
+        googleId: user.googleId,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+    });
+  } catch (error) {
+    console.error("Update profile error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+}
+
+export const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user._id; // from your protect middleware
+
+    // Delete user from database
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Account deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
